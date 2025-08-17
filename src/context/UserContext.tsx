@@ -56,6 +56,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
             if (!res.ok) throw new Error("Unauthorized");
             const data: User = await res.json();
             setUser(data);
+            setLoading(false);
         } catch {
             setUser(null);
         } finally {
