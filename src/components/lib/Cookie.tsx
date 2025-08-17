@@ -1,5 +1,7 @@
 import * as jwtDecoded from "jwt-decode";
 import { AlertNotification } from "../global/Alert";
+import { authenticate } from '@/lib/auth'
+import { User } from '@/types'
 
 // Fungsi untuk menyimpan nilai ke cookies
 export const setCookie = (name: string, value: any) => {
@@ -75,13 +77,18 @@ export const logout = () => {
     window.location.href = '/login';
 };
 
-export const getUser = () => {
-    const get_user = getCookie("user");
+export async function getUser(): Promise<{ user: User } | null> {
+    try {
+        const get_user = await authenticate();
 
-    if (get_user) {
-        return {
-            user: JSON.parse(get_user)
-        };
+        if (get_user) {
+            return { user: get_user };
+        }
+
+        return null;
+    } catch (error) {
+        console.error("Failed to get user:", error);
+        return null;
     }
 }
 
