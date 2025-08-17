@@ -6,6 +6,10 @@ import Link from 'next/link';
 import { TbCircleArrowLeftFilled } from 'react-icons/tb';
 import { DataMaster } from '@/menus/DataMaster';
 import { DataMasterOpd } from '@/menus/DataMasterOpd';
+import { PerencanaanPemda } from '@/menus/PerencanaanPemda'
+import { PerencanaanOpd } from '@/menus/PerencanaanOpd'
+import { PerencanaanAsn } from '@/menus/PerencanaanAsn'
+import { Laporan } from '@/menus/Laporan'
 import { User } from '@/types';
 import { ReactNode } from "react";
 import { useState, useEffect } from "react";
@@ -111,7 +115,15 @@ export default function Sidebar({ isZoomed, isOpen, toggleSidebar, user }: Sideb
     const url = usePathname();
 
     const roleMenus: Record<string, MenuItem[]> = {
-        super_admin: [DataMaster, DataMasterOpd],
+        super_admin: [DataMaster, DataMasterOpd, PerencanaanPemda, PerencanaanOpd, Laporan],
+        admin_opd: [DataMasterOpd, PerencanaanOpd, Laporan],
+        admin_kecamatan: [DataMasterOpd, PerencanaanOpd, Laporan],
+        reviewer: [PerencanaanPemda, PerencanaanOpd, Laporan],
+        level_1: [PerencanaanAsn],
+        level_2: [PerencanaanAsn],
+        level_3: [PerencanaanAsn],
+        level_4: [PerencanaanAsn],
+        staff: [PerencanaanAsn],
     };
 
     const userMenus: MenuItem[] = roles.flatMap(role => roleMenus[role] ?? []);
