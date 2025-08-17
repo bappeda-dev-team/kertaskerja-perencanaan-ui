@@ -1,12 +1,19 @@
+import { Poppins } from "next/font/google";
 import LayoutWrapper from '@/app/LayoutWrapper';
 import { BrandingProvider } from "@/context/BrandingContext";
 import { UserProvider } from "@/context/UserContext";
 import NextTopLoader from "nextjs-toploader";
 import "./globals.css";
 
+const font = Poppins({
+    subsets: ['latin'],
+    weight: ['200', '300', '400', '500', '600', '700', '800'],
+    display: 'swap', // Mengatur tampilan swap agar tidak ada flash saat font dimuat
+});
+
 export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
     return (
-        <html lang="en">
+        <html lang="en" className={font.className}>
             <body className="flex">
                 <UserProvider>
                     <BrandingProvider>
