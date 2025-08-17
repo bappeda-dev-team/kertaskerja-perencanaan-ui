@@ -4,6 +4,7 @@ import { LoadingBeat } from '@/components/global/Loading';
 import { Pohon } from '@/components/lib/Pohon/Pemda/Pohon';
 import { getOpdTahun, getToken, getUser } from '@/components/lib/Cookie';
 import { PohonLaporan } from '@/components/lib/Pohon/Cascading/PohonLaporan';
+import { useUser } from '@/context/UserContext';
 
 interface pohontematik {
     id: number;
@@ -37,7 +38,7 @@ interface childs {
 }
 
 const PohonTematik = ({ id, jenis, show_all, set_show_all }: pohontematik) => {
-
+    const { user } = useUser();
     const [Pokin, setPokin] = useState<tematik[]>([]);
     const [Loading, setLoading] = useState<boolean | null>(null);
     const [error, setError] = useState<string>('');
@@ -49,12 +50,12 @@ const PohonTematik = ({ id, jenis, show_all, set_show_all }: pohontematik) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
-        if(data.tahun){
+        if (data.tahun) {
             const tahun = {
                 value: data.tahun.value,
                 label: data.tahun.label,

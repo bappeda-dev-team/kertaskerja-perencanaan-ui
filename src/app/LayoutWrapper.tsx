@@ -13,7 +13,7 @@ const font = Poppins({
 });
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
-    const [isOpen, setIsOpen] = useState<boolean | null>(null);
+    const [isOpen, setIsOpen] = useState<boolean>(true);
     const [isZoomed, setIsZoomed] = useState<boolean | null>(null);
     const { user } = useUser();
 

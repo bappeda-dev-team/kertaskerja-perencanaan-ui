@@ -8,6 +8,7 @@ import { getOpdTahun, getToken, getUser } from "@/components/lib/Cookie";
 import Select from 'react-select';
 import { TbCheck, TbCircleLetterXFilled, TbHourglass } from 'react-icons/tb';
 import { LoadingSync } from "@/components/global/Loading";
+import { useUser } from "@/context/UserContext";
 
 interface OptionType {
     value: number;
@@ -53,72 +54,73 @@ type target = {
     satuan: string;
 };
 
-export const ModalPindahPohonOpd: React.FC<modal> = ({isOpen, onClose, onSuccess, id, pohon}) => {
+export const ModalPindahPohonOpd: React.FC<modal> = ({ isOpen, onClose, onSuccess, id, pohon }) => {
 
     const {
-      control,
-      handleSubmit,
-      formState: { errors },
+        control,
+        handleSubmit,
+        formState: { errors },
     } = useForm<FormValue>();
 
     const [PohonParent, setPohonParent] = useState<pohon | null>(null);
     const [Pohon, setPohon] = useState<pohon | null>(null);
     const [OptionPohonParent, setOptionPohonParent] = useState<pohon[]>([]);
-    
+
     const [Loading, setLoading] = useState<boolean>(false);
     const [IsLoading, setIsLoading] = useState<boolean>(false);
-    
+
     const [User, setUser] = useState<any>(null);
     const [Tahun, setTahun] = useState<any>(null);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
     const token = getToken();
-    
+    const { user } = useUser();
+
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
-        if(fetchUser){
-            setUser(fetchUser.user);
+        if (fetchUser) {
+            setUser(user);
         }
-        if(data.tahun){
+        if (data.tahun) {
             const tahun = {
                 value: data.tahun.value,
                 label: data.tahun.label,
             }
             setTahun(tahun);
         }
-        if(data.opd){
+        if (data.opd) {
             const opd = {
                 value: data.opd.value,
                 label: data.opd.label,
             }
             setSelectedOpd(opd);
         }
-    },[]);
+    }, []);
 
     useEffect(() => {
-        const fetchPohonPilihan = async() => {
+        const fetchPohonPilihan = async () => {
             const API_URL = process.env.NEXT_PUBLIC_API_URL;
             setLoading(true);
-            try{
+            try {
                 const response = await fetch(`${API_URL}/pohon_kinerja_opd/detail/${id}`, {
                     method: "GET",
-                    headers : {
-                        Authorization : `${token}`,
+                    headers: {
+                        Authorization: `${token}`,
                     }
                 });
-                if(!response.ok){
+                if (!response.ok) {
                     throw new Error('terdapat kesalahan server backend saat fetch pohon yang akan dipindah');
                 }
                 const result = await response.json();
                 const data = result.data;
                 setPohon(data);
-            } catch(err){
+            } catch (err) {
                 console.log('gagal mendapatkan data pohon yang akan dipindahkan');
             } finally {
                 setLoading(false);
             }
         }
-        if(isOpen){
+        if (isOpen) {
             fetchPohonPilihan();
         }
     }, [isOpen, id, token]);
@@ -150,9 +152,9 @@ export const ModalPindahPohonOpd: React.FC<modal> = ({isOpen, onClose, onSuccess
                 throw new Error('cant fetch data opd');
             }
             const data = await response.json();
-            if(data.data == null){
+            if (data.data == null) {
                 console.log("pohon opd untuk parent kosong, tambahkan di pohon kinerja OPD untuk membuat pohon parent");
-            } else if(data.data != null) {
+            } else if (data.data != null) {
                 const parent = data.data.map((item: any) => ({
                     value: item.id,
                     label: `${item.jenis_pohon} - ${item.nama_pohon}`,
@@ -183,128 +185,128 @@ export const ModalPindahPohonOpd: React.FC<modal> = ({isOpen, onClose, onSuccess
             //key : value
             parent: data.parent?.value
         };
-        if(PohonParent == null || undefined){
+        if (PohonParent == null || undefined) {
             AlertNotification("pilih Parent terlebih dahulu", "", "warning", 1000);
         } else {
             // console.log(formData);
-            try{
+            try {
                 const response = await fetch(`${API_URL}/pohon_kinerja_opd/pindah_parent/${id}`, {
                     method: "PUT",
                     headers: {
                         Authorization: `${token}`,
-                        "Content-Type" : "application/json",
+                        "Content-Type": "application/json",
                     },
                     body: JSON.stringify(formData),
                 });
-                if(response.ok){
+                if (response.ok) {
                     AlertNotification("Berhasil", "Berhasil Pindah Pohon", "success", 1000);
                     onClose();
                     onSuccess();
                 } else {
                     AlertNotification("Gagal", "terdapat kesalahan pada backend / database server", "error", 2000);
                 }
-            } catch(err){
+            } catch (err) {
                 AlertNotification("Error", "cek koneksi internet/terdapat kesalahan pada database server", "error", 2000);
                 console.error(err);
             }
         }
-      };
+    };
 
-    if(!isOpen){
+    if (!isOpen) {
         return null;
     } else {
 
-    return(
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className={`fixed inset-0 bg-black opacity-30`} onClick={handleClose}></div>
-            <div className={`bg-white rounded-lg p-8 z-10 w-4/5 max-h-[80%] text-start overflow-auto`}>
-                <form
-                    onSubmit={handleSubmit(onSubmit)}
-                >
-                    <div className="w-max-[500px] py-2 mb-2 border-b-2 border-gray-300 text-center uppercase font-bold">
-                       Pindah Pohon
-                    </div>
-                    <div className="flex-[1_1_50%] flex-col justify-center pr-2">
-                        <label
-                            className="uppercase text-xs font-medium text-gray-700 my-2"
-                            htmlFor="parent"
-                        >
-                            Pilih Pohon Parent
-                        </label>
-                        <Controller
-                            name="parent"
-                            control={control}
-                            render={({ field }) => (
-                            <>
-                                <Select
-                                    {...field}
-                                    placeholder="Pilih Pohon Parent"
-                                    isLoading={IsLoading}
-                                    value={PohonParent}
-                                    options={OptionPohonParent}
-                                    isSearchable
-                                    isClearable
-                                    onMenuOpen={() => {
-                                        if(pohon?.level_pohon === 5){
-                                            fetchPohonParent(4)
-                                        } else if(pohon?.level_pohon === 6){
-                                            fetchPohonParent(5)
-                                        } else if(pohon?.level_pohon === 7){
-                                            fetchPohonParent(6)
-                                        } else if(pohon?.level_pohon === 8){
-                                            fetchPohonParent(7)
-                                        } else if(pohon?.level_pohon === 9){
-                                            fetchPohonParent(8)
-                                        }
-                                    }}
-                                    onMenuClose={() => setOptionPohonParent([])}
-                                    onChange={(option) => {
-                                        field.onChange(option);
-                                        setPohonParent(option);
-                                    }}
-                                    styles={{
-                                        control: (baseStyles) => ({
-                                        ...baseStyles,
-                                        borderRadius: '8px',
-                                        textAlign: 'start',
-                                        })
-                                    }}
-                                />
-                            </>
-                            )}
-                        />
-                        <p className="text-xs italic text-gray-400 mt-1">*Pohon yang dipilih akan menjadi parent bagi pohon yang ingin dipindah</p>
-                    </div>
-                    <div className={`flex pt-2 ${PohonParent ? 'justify-around mr-4':'justify-start'}`}>
-                        <p className="text-sm fotnt-bold">Preview pohon yang ingin dipindahkan :</p>
-                        {PohonParent &&
-                            <p className="text-sm fotnt-bold">Preview pohon parent :</p>
-                        }
-                    </div>
-                    {/* PREVIEW KEDUA POHON */}
-                    <div className="flex justify-between items-start py-2 gap-2 h-full overflow-auto">
-                        {Loading ? 
-                            <div className="flex w-full justify-center">
-                                <LoadingSync />
-                            </div>
-                        :
-                            <>
-                                {/* POHON YANG DIPINDAH */}
-                                <div className="flex flex-col w-full justify-center items-center">
-                                    <div 
-                                        className={`flex flex-col rounded-lg shadow-lg px-2
+        return (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+                <div className={`fixed inset-0 bg-black opacity-30`} onClick={handleClose}></div>
+                <div className={`bg-white rounded-lg p-8 z-10 w-4/5 max-h-[80%] text-start overflow-auto`}>
+                    <form
+                        onSubmit={handleSubmit(onSubmit)}
+                    >
+                        <div className="w-max-[500px] py-2 mb-2 border-b-2 border-gray-300 text-center uppercase font-bold">
+                            Pindah Pohon
+                        </div>
+                        <div className="flex-[1_1_50%] flex-col justify-center pr-2">
+                            <label
+                                className="uppercase text-xs font-medium text-gray-700 my-2"
+                                htmlFor="parent"
+                            >
+                                Pilih Pohon Parent
+                            </label>
+                            <Controller
+                                name="parent"
+                                control={control}
+                                render={({ field }) => (
+                                    <>
+                                        <Select
+                                            {...field}
+                                            placeholder="Pilih Pohon Parent"
+                                            isLoading={IsLoading}
+                                            value={PohonParent}
+                                            options={OptionPohonParent}
+                                            isSearchable
+                                            isClearable
+                                            onMenuOpen={() => {
+                                                if (pohon?.level_pohon === 5) {
+                                                    fetchPohonParent(4)
+                                                } else if (pohon?.level_pohon === 6) {
+                                                    fetchPohonParent(5)
+                                                } else if (pohon?.level_pohon === 7) {
+                                                    fetchPohonParent(6)
+                                                } else if (pohon?.level_pohon === 8) {
+                                                    fetchPohonParent(7)
+                                                } else if (pohon?.level_pohon === 9) {
+                                                    fetchPohonParent(8)
+                                                }
+                                            }}
+                                            onMenuClose={() => setOptionPohonParent([])}
+                                            onChange={(option) => {
+                                                field.onChange(option);
+                                                setPohonParent(option);
+                                            }}
+                                            styles={{
+                                                control: (baseStyles) => ({
+                                                    ...baseStyles,
+                                                    borderRadius: '8px',
+                                                    textAlign: 'start',
+                                                })
+                                            }}
+                                        />
+                                    </>
+                                )}
+                            />
+                            <p className="text-xs italic text-gray-400 mt-1">*Pohon yang dipilih akan menjadi parent bagi pohon yang ingin dipindah</p>
+                        </div>
+                        <div className={`flex pt-2 ${PohonParent ? 'justify-around mr-4' : 'justify-start'}`}>
+                            <p className="text-sm fotnt-bold">Preview pohon yang ingin dipindahkan :</p>
+                            {PohonParent &&
+                                <p className="text-sm fotnt-bold">Preview pohon parent :</p>
+                            }
+                        </div>
+                        {/* PREVIEW KEDUA POHON */}
+                        <div className="flex justify-between items-start py-2 gap-2 h-full overflow-auto">
+                            {Loading ?
+                                <div className="flex w-full justify-center">
+                                    <LoadingSync />
+                                </div>
+                                :
+                                <>
+                                    {/* POHON YANG DIPINDAH */}
+                                    <div className="flex flex-col w-full justify-center items-center">
+                                        <div
+                                            className={`flex flex-col rounded-lg shadow-lg px-2
                                             ${pohon?.jenis_pohon === "Strategic Pemda" && 'border'}
                                             ${pohon?.jenis_pohon === "Tactical Pemda" && 'border'}
                                             ${pohon?.jenis_pohon === "OperationalPemda" && 'border'}
                                             ${pohon?.jenis_pohon === "Strategic" && 'bg-red-700'}
-                                            ${pohon?.jenis_pohon === "Tactical"&& 'bg-blue-500'}
+                                            ${pohon?.jenis_pohon === "Tactical" && 'bg-blue-500'}
                                             ${pohon?.jenis_pohon === "Operational" && 'bg-green-500'}
                                             ${pohon?.jenis_pohon === "Operational N" && 'bg-white'}
                                             ${(pohon?.jenis_pohon === "Strategic Crosscutting" || pohon?.jenis_pohon === "Tactical Crosscutting" || pohon?.jenis_pohon === "Operational Crosscutting" || pohon?.jenis_pohon === "Operational N Crosscutting") && 'bg-yellow-700'}
                                         `}
-                                    >
-                                        <div
-                                            className={`flex py-3 justify-center font-bold text-sm uppercase border my-3 rounded-lg bg-white
+                                        >
+                                            <div
+                                                className={`flex py-3 justify-center font-bold text-sm uppercase border my-3 rounded-lg bg-white
                                                 ${pohon?.jenis_pohon === "Strategic Pemda" && 'border-red-500 text-white bg-gradient-to-r from-[#CA3636] from-40% to-[#BD04A1]'}
                                                 ${pohon?.jenis_pohon === "Tactical Pemda" && 'border-blue-500 text-white bg-gradient-to-r from-[#3673CA] from-40% to-[#08D2FB]'}
                                                 ${pohon?.jenis_pohon === "Operational Pemda" && 'border-green-500 text-white bg-gradient-to-r from-[#007982] from-40% to-[#2DCB06]'}
@@ -313,33 +315,33 @@ export const ModalPindahPohonOpd: React.FC<modal> = ({isOpen, onClose, onSuccess
                                                 ${(pohon?.jenis_pohon === "Operational" || pohon?.jenis_pohon === "Operational N") && 'border-green-500 text-green-500'}
                                                 ${(pohon?.jenis_pohon === "Operational Crosscutting" || pohon?.jenis_pohon === "Operational N Crosscutting") && 'border-green-500 text-green-500'}
                                             `}
-                                        >
-                                            {Pohon?.jenis_pohon}
-                                        </div>
-                                        <div className="mb-3">
-                                            {Pohon &&
-                                                <TablePohon item={Pohon}/>
-                                            }
+                                            >
+                                                {Pohon?.jenis_pohon}
+                                            </div>
+                                            <div className="mb-3">
+                                                {Pohon &&
+                                                    <TablePohon item={Pohon} />
+                                                }
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                {/* POHON PARENT */}
-                                <div className="flex flex-col w-full justify-center items-center">
-                                    {(PohonParent?.value != null) || (PohonParent?.value != undefined) ? 
-                                        <div 
-                                            className={`flex flex-col rounded-lg shadow-lg px-2
+                                    {/* POHON PARENT */}
+                                    <div className="flex flex-col w-full justify-center items-center">
+                                        {(PohonParent?.value != null) || (PohonParent?.value != undefined) ?
+                                            <div
+                                                className={`flex flex-col rounded-lg shadow-lg px-2
                                                 ${PohonParent?.jenis_pohon === "Strategic Pemda" && 'border'}
                                                 ${PohonParent?.jenis_pohon === "Tactical Pemda" && 'border'}
                                                 ${PohonParent?.jenis_pohon === "OperationalPemda" && 'border'}
                                                 ${PohonParent?.jenis_pohon === "Strategic" && 'bg-red-700'}
-                                                ${PohonParent?.jenis_pohon === "Tactical"&& 'bg-blue-500'}
+                                                ${PohonParent?.jenis_pohon === "Tactical" && 'bg-blue-500'}
                                                 ${PohonParent?.jenis_pohon === "Operational" && 'bg-green-500'}
                                                 ${PohonParent?.jenis_pohon === "Operational N" && 'bg-white'}
                                                 ${(PohonParent?.jenis_pohon === "Strategic Crosscutting" || PohonParent?.jenis_pohon === "Tactical Crosscutting" || PohonParent?.jenis_pohon === "Operational Crosscutting" || PohonParent?.jenis_pohon === "Operational N Crosscutting") && 'bg-yellow-700'}
                                             `}
-                                        >
-                                            <div
-                                                className={`flex py-3 justify-center font-bold text-sm uppercase border my-3 rounded-lg bg-white
+                                            >
+                                                <div
+                                                    className={`flex py-3 justify-center font-bold text-sm uppercase border my-3 rounded-lg bg-white
                                                     ${PohonParent?.jenis_pohon === "Strategic Pemda" && 'border-red-500 text-white bg-gradient-to-r from-[#CA3636] from-40% to-[#BD04A1]'}
                                                     ${PohonParent?.jenis_pohon === "Tactical Pemda" && 'border-blue-500 text-white bg-gradient-to-r from-[#3673CA] from-40% to-[#08D2FB]'}
                                                     ${PohonParent?.jenis_pohon === "Operational Pemda" && 'border-green-500 text-white bg-gradient-to-r from-[#007982] from-40% to-[#2DCB06]'}
@@ -348,38 +350,38 @@ export const ModalPindahPohonOpd: React.FC<modal> = ({isOpen, onClose, onSuccess
                                                     ${(PohonParent?.jenis_pohon === "Operational" || PohonParent?.jenis_pohon === "Operational N") && 'border-green-500 text-green-500'}
                                                     ${(PohonParent?.jenis_pohon === "Operational Crosscutting" || PohonParent?.jenis_pohon === "Operational N Crosscutting") && 'border-green-500 text-green-500'}
                                                 `}
-                                            >
-                                                {PohonParent?.jenis_pohon}
+                                                >
+                                                    {PohonParent?.jenis_pohon}
+                                                </div>
+                                                <div className="mb-3">
+                                                    {PohonParent &&
+                                                        <TablePohon item={PohonParent} />
+                                                    }
+                                                </div>
                                             </div>
-                                            <div className="mb-3">
-                                                {PohonParent &&
-                                                    <TablePohon item={PohonParent}/>
-                                                }
+                                            :
+                                            <div className={`flex rounded-lg shadow-lg p-2 items-center`}>
+                                                <p>Preview Pohon Parent setelah memilih pohon parent</p>
                                             </div>
-                                        </div>
-                                    :
-                                        <div className={`flex rounded-lg shadow-lg p-2 items-center`}>
-                                            <p>Preview Pohon Parent setelah memilih pohon parent</p>
-                                        </div>
-                                    }
-                                </div>
-                            </>
-                        }
-                    </div>
-                    <ButtonSky type="submit" className="w-full my-3">
-                        Simpan
-                    </ButtonSky>
-                    <ButtonRed className="w-full my-3" onClick={handleClose}>
-                        Batal
-                    </ButtonRed>
-                </form>
+                                        }
+                                    </div>
+                                </>
+                            }
+                        </div>
+                        <ButtonSky type="submit" className="w-full my-3">
+                            Simpan
+                        </ButtonSky>
+                        <ButtonRed className="w-full my-3" onClick={handleClose}>
+                            Batal
+                        </ButtonRed>
+                    </form>
+                </div>
             </div>
-        </div>
-    )
+        )
     }
 }
 
-export const TablePohon = ({item} : {item: pohon}) => {
+export const TablePohon = ({ item }: { item: pohon }) => {
     const id = item.id;
     const tema = item.nama_pohon;
     const keterangan = item.keterangan;
@@ -444,7 +446,7 @@ export const TablePohon = ({item} : {item: pohon}) => {
                                         {data.nama_indikator ? data.nama_indikator : "-"}
                                     </td>
                                 </tr>
-                                {data.targets ? 
+                                {data.targets ?
                                     data.targets.map((data: any) => (
                                         <tr key={data.id_target}>
                                             <td
@@ -471,31 +473,31 @@ export const TablePohon = ({item} : {item: pohon}) => {
                                             </td>
                                         </tr>
                                     ))
-                                :
-                                        <tr>
-                                            <td
-                                                className={`min-w-[50px] border px-2 py-3 bg-white text-start
+                                    :
+                                    <tr>
+                                        <td
+                                            className={`min-w-[50px] border px-2 py-3 bg-white text-start
                                                     ${jenis === "Strategic" && "border-red-700"}
                                                     ${jenis === "Tactical" && "border-blue-500"}
                                                     ${(jenis === "Operational" || jenis === "Operational N") && "border-green-500"}
                                                     ${(jenis === "Strategic Pemda" || jenis === "Tactical Pemda" || jenis === "Operational Pemda") && "border-black"}
                                                     ${(jenis === "Strategic Crosscutting" || jenis === "Tactical Crosscutting" || jenis === "Operational Crosscutting" || jenis === "Operational N Crosscutting") && "border-yellow-700"}    
                                                 `}
-                                            >
-                                                Target/Satuan
-                                            </td>
-                                            <td
-                                                className={`min-w-[100px] border px-2 py-3 bg-white text-start
+                                        >
+                                            Target/Satuan
+                                        </td>
+                                        <td
+                                            className={`min-w-[100px] border px-2 py-3 bg-white text-start
                                                     ${jenis === "Strategic" && "border-red-700"}
                                                     ${jenis === "Tactical" && "border-blue-500"}
                                                     ${(jenis === "Operational" || jenis === "Operational N") && "border-green-500"}
                                                     ${(jenis === "Strategic Pemda" || jenis === "Tactical Pemda" || jenis === "Operational Pemda") && "border-black"}
                                                     ${(jenis === "Strategic Crosscutting" || jenis === "Tactical Crosscutting" || jenis === "Operational Crosscutting" || jenis === "Operational N Crosscutting") && "border-yellow-700"}    
                                                 `}
-                                            >
-                                                -
-                                            </td>
-                                        </tr>
+                                        >
+                                            -
+                                        </td>
+                                    </tr>
                                 }
                             </React.Fragment>
                         ))
@@ -526,7 +528,7 @@ export const TablePohon = ({item} : {item: pohon}) => {
                                         {data.nama_indikator ? data.nama_indikator : "-"}
                                     </td>
                                 </tr>
-                                {data.targets ? 
+                                {data.targets ?
                                     data.targets.map((data: any) => (
                                         <tr key={data.id_target}>
                                             <td
@@ -553,31 +555,31 @@ export const TablePohon = ({item} : {item: pohon}) => {
                                             </td>
                                         </tr>
                                     ))
-                                :
-                                        <tr>
-                                            <td
-                                                className={`min-w-[50px] border px-2 py-3 bg-white text-start
+                                    :
+                                    <tr>
+                                        <td
+                                            className={`min-w-[50px] border px-2 py-3 bg-white text-start
                                                     ${jenis === "Strategic" && "border-red-700"}
                                                     ${jenis === "Tactical" && "border-blue-500"}
                                                     ${(jenis === "Operational" || jenis === "Operational N") && "border-green-500"}
                                                     ${(jenis === "Strategic Pemda" || jenis === "Tactical Pemda" || jenis === "Operational Pemda") && "border-black"}
                                                     ${(jenis === "Strategic Crosscutting" || jenis === "Tactical Crosscutting" || jenis === "Operational Crosscutting" || jenis === "Operational N Crosscutting") && "border-yellow-700"}    
                                                 `}
-                                            >
-                                                Target/Satuan
-                                            </td>
-                                            <td
-                                                className={`min-w-[100px] border px-2 py-3 bg-white text-start
+                                        >
+                                            Target/Satuan
+                                        </td>
+                                        <td
+                                            className={`min-w-[100px] border px-2 py-3 bg-white text-start
                                                     ${jenis === "Strategic" && "border-red-700"}
                                                     ${jenis === "Tactical" && "border-blue-500"}
                                                     ${(jenis === "Operational" || jenis === "Operational N") && "border-green-500"}
                                                     ${(jenis === "Strategic Pemda" || jenis === "Tactical Pemda" || jenis === "Operational Pemda") && "border-black"}
                                                     ${(jenis === "Strategic Crosscutting" || jenis === "Tactical Crosscutting" || jenis === "Operational Crosscutting" || jenis === "Operational N Crosscutting") && "border-yellow-700"}    
                                                 `}
-                                            >
-                                                -
-                                            </td>
-                                        </tr>
+                                        >
+                                            -
+                                        </td>
+                                    </tr>
                                 }
                             </React.Fragment>
                         ))

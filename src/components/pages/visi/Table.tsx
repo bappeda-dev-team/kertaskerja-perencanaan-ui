@@ -10,6 +10,7 @@ import { getToken, getUser } from "@/components/lib/Cookie";
 import { TbPencil, TbTrash, TbCirclePlus } from "react-icons/tb";
 import { ModalVisi } from "../visi/ModalVisi";
 import Select from 'react-select';
+import { useUser } from "@/context/UserContext";
 
 interface OptionTypeString {
     label: string;
@@ -47,12 +48,13 @@ const Table = () => {
     const [Tahun, setTahun] = useState<any>(null);
     const [User, setUser] = useState<any>(null);
     const token = getToken();
+    const { user } = useUser();
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {
@@ -203,9 +205,9 @@ const Table = () => {
                                     <td className="px-6 py-3 flex flex-wrap items-center gap-5" colSpan={30}>
                                         <p>Data Kosong / Belum Ditambahkan</p>
                                         <ButtonSky
-                                        onClick={() => handleModalNewTujuan()}
+                                            onClick={() => handleModalNewTujuan()}
                                         >
-                                            <TbCirclePlus className="mr-1"/>
+                                            <TbCirclePlus className="mr-1" />
                                             Tambah Visi
                                         </ButtonSky>
                                     </td>

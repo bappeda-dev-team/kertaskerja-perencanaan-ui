@@ -13,6 +13,7 @@ import { ModalPindahPohonOpd } from '@/components/pages/Pohon/ModalPindahPohonOp
 import { ModalReview } from '@/components/pages/Pohon/ModalReview';
 import { ModalCetak } from '@/components/pages/Pohon/ModalCetak';
 import { LoadingClip } from '@/components/global/Loading';
+import { useUser } from '@/context/UserContext';
 
 interface pohon {
     tema: any;
@@ -74,11 +75,12 @@ export const PohonOpd: React.FC<pohon> = ({ tema, deleteTrigger, fetchTrigger, s
     const [User, setUser] = useState<any>(null);
     const token = getToken();
     const [IsCetak, setIsCetak] = useState<boolean>(false);
+    const { user } = useUser();
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
     }, []);
 

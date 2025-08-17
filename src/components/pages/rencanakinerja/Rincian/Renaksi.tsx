@@ -8,6 +8,7 @@ import React, { useState, useEffect } from "react";
 import { getUser, getToken, getOpdTahun } from "@/components/lib/Cookie";
 import { LoadingSync } from "@/components/global/Loading";
 import { AlertNotification, AlertQuestion } from "@/components/global/Alert";
+import { useUser } from "@/context/UserContext";
 
 interface id {
    id: string;
@@ -56,11 +57,12 @@ const Renaksi: React.FC<id> = ({ id }) => {
    const [IdPelaksanaan, setIdPelaksanaan] = useState<string>('');
    const [NamaRenaksi, setNamaRenaksi] = useState<string>('');
    const [Bulan, setBulan] = useState<number | null>(null);
+   const { user } = useUser();
 
    useEffect(() => {
-      const fetchUser = getUser();
+      const fetchUser = user;
       if (fetchUser) {
-         setUser(fetchUser.user);
+         setUser(user);
       }
    }, []);
 
@@ -196,7 +198,7 @@ const Renaksi: React.FC<id> = ({ id }) => {
                <h1 className="font-bold">Rencana Aksi</h1>
                <div className="flex flex-wrap">
                   <ButtonSky className="m-1" onClick={handleModalNewRenaksi}>
-                     <TbCirclePlus className="mr-1"/>
+                     <TbCirclePlus className="mr-1" />
                      Tambah Tahapan
                   </ButtonSky>
                </div>

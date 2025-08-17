@@ -6,6 +6,7 @@ import { getUser, getOpdTahun, getToken, getPeriode, setCookie } from "@/compone
 import { useState, useEffect } from "react";
 import Select from 'react-select';
 import { OpdTahunNull } from "@/components/global/OpdTahunNull";
+import { useUser } from "@/context/UserContext";
 
 interface Periode {
     value: number;
@@ -18,7 +19,7 @@ interface Periode {
 }
 
 const IkuOpd = () => {
-
+    const { user } = useUser();
     const [Tahun, setTahun] = useState<any>(null);
     const [User, setUser] = useState<any>(null);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
@@ -32,9 +33,9 @@ const IkuOpd = () => {
     useEffect(() => {
         const data = getOpdTahun();
         const fetchPeriode = getPeriode();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {

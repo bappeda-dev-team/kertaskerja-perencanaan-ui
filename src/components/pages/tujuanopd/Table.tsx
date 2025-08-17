@@ -8,6 +8,7 @@ import { TahunNull, OpdTahunNull } from "@/components/global/OpdTahunNull";
 import { getToken, getUser, getOpdTahun } from "@/components/lib/Cookie";
 import { TbPencil, TbTrash, TbCirclePlus } from "react-icons/tb";
 import { ModalTujuanOpd } from "./ModalTujuanOpd";
+import { useUser } from "@/context/UserContext";
 
 interface Periode {
     id: number;
@@ -88,12 +89,13 @@ const Table: React.FC<table> = ({ tipe, id_periode, tahun_awal, tahun_akhir, jen
     const [User, setUser] = useState<any>(null);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
     const token = getToken();
+    const { user } = useUser();
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {
@@ -137,7 +139,7 @@ const Table: React.FC<table> = ({ tipe, id_periode, tahun_awal, tahun_akhir, jen
                     setPeriodeNotFound(true);
                     console.log(result.data);
                     setTujuan([]);
-                } else if(result.code == 200 || result.code == 201){
+                } else if (result.code == 200 || result.code == 201) {
                     setDataNull(false);
                     setTujuan(data);
                     setError(false);
@@ -219,7 +221,7 @@ const Table: React.FC<table> = ({ tipe, id_periode, tahun_awal, tahun_akhir, jen
         )
     } else if (Tahun?.value == undefined) {
         return <TahunNull />
-    } else if(User?.roles == 'super_admin'){
+    } else if (User?.roles == 'super_admin') {
         if (SelectedOpd?.value == undefined) {
             return (
                 <>

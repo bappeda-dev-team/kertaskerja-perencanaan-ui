@@ -79,10 +79,10 @@ export const FormEditCascading: React.FC<{
     const token = getToken();
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {

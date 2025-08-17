@@ -6,18 +6,20 @@ import { useEffect, useState } from 'react';
 import { getOpdTahun, getUser } from '@/components/lib/Cookie';
 import Maintenance from '@/components/global/Maintenance';
 import { OpdTahunNull, TahunNull } from '@/components/global/OpdTahunNull';
+import { useUser } from '@/context/UserContext';
 
 const PermasalahanaOpd = () => {
 
+    const { user } = useUser();
     const [Tahun, setTahun] = useState<any>(null);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
     const [User, setUser] = useState<any>(null);
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data) {
             if (data.tahun) {

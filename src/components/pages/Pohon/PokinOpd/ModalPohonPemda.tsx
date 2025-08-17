@@ -7,6 +7,7 @@ import { ButtonRedBorder, ButtonSkyBorder, ButtonRed, ButtonBlackBorder } from "
 import { LoadingBeat, LoadingButtonClip } from "@/components/global/Loading";
 import { getToken, getUser, getOpdTahun } from "@/components/lib/Cookie";
 import { TablePohon } from "../ModalPindahPohonOpd";
+import { useUser } from "@/context/UserContext";
 
 interface modal {
     isOpen: boolean;
@@ -82,7 +83,7 @@ type target = {
 };
 
 export const ModalPohonPemda: React.FC<modal> = ({ isOpen, onClose, onSuccess, isLevel }) => {
-
+    const { user } = useUser();
     const [PohonPemda, setPohonPemda] = useState<TypePohonPemda | null>(null);
     const [ButtonDetailPohonPemda, setButtonDetailPohonPemda] = useState<boolean>(false);
     const [DetailPohonPemda, setDetailPohonPemda] = useState<pokin | null>(null);
@@ -99,9 +100,9 @@ export const ModalPohonPemda: React.FC<modal> = ({ isOpen, onClose, onSuccess, i
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         const data = getOpdTahun();
         if (data.tahun) {
@@ -576,6 +577,7 @@ export const ModalPohonPemda: React.FC<modal> = ({ isOpen, onClose, onSuccess, i
 
 export const ModalPohonCrosscutting: React.FC<modal> = ({ isOpen, onClose, onSuccess }) => {
 
+    const { user } = useUser();
     const [PohonCross, setPohonCross] = useState<TypePohonCross | null>(null);
     const [PohonParent, setPohonParent] = useState<OptionType | null>(null);
     const [LevelPohon, setLevelPohon] = useState<OptionType | null>(null);
@@ -594,9 +596,9 @@ export const ModalPohonCrosscutting: React.FC<modal> = ({ isOpen, onClose, onSuc
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         const data = getOpdTahun();
         if (data.tahun) {

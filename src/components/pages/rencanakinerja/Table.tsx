@@ -55,10 +55,10 @@ export const TablePerencanaan = () => {
     const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data) {
             if (data.tahun) {

@@ -15,9 +15,11 @@ import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getUser, getOpdTahun } from '@/components/lib/Cookie';
 import { TbDeviceFloppy } from 'react-icons/tb';
+import { useUser } from '@/context/UserContext';
 
 const RincianRencanaKinerja = () => {
 
+    const { user } = useUser();
     const params = useParams();
     const router = useRouter();
     const id_rekin = params.id as string;
@@ -25,10 +27,10 @@ const RincianRencanaKinerja = () => {
     const [Tahun, setTahun] = useState<any>(null);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {

@@ -7,6 +7,7 @@ import { AlertNotification } from "@/components/global/Alert";
 import { getToken, getUser, getOpdTahun } from "@/components/lib/Cookie";
 import { LoadingButtonClip } from "@/components/global/Loading";
 import Select from "react-select";
+import { useUser } from "@/context/UserContext";
 
 interface OptionType {
     value: number;
@@ -67,19 +68,20 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
     const [PeraturanTerkait, setPeraturanTerkait] = useState<string>('');
     // inisiatif
     const [UsulanInisiatif, setUsulanInisiatif] = useState<string>('');
-    
+
     const [Uraian, setUraian] = useState<string>('');
     const [Manfaat, setManfaat] = useState<string>('');
-    
+
     const [LoadingOption, setLoadingOption] = useState<boolean>(false);
     const [Proses, setProses] = useState<boolean>(false);
     const token = getToken();
+    const { user } = useUser();
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {
@@ -196,7 +198,7 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
         // JenisUsulan === "pokir" && console.log("Pokir :", formDataPokir);
         // JenisUsulan === "mandatori" && console.log("mandatori :", formDataMandatori);
         // JenisUsulan === "inisiatif" && console.log("inisiatif :", formDataInisiatif);
-        try{
+        try {
             let url = "";
             if (JenisUsulan === "musrenbang") {
                 url = `usulan_musrebang/create_rekin/${rekin_id}`;
@@ -218,14 +220,14 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
                 },
                 body: JSON.stringify(getBody()),
             });
-            if(response.ok){
+            if (response.ok) {
                 AlertNotification("Berhasil", "Berhasil menambahkan Usulan", "success", 1000);
                 onClose();
                 onSuccess();
             } else {
                 AlertNotification("Gagal", "terdapat kesalahan pada backend / database server", "error", 2000);
             }
-        } catch(err){
+        } catch (err) {
             console.error(err);
             AlertNotification("Gagal", "cek koneksi internet/terdapat kesalahan pada database server", "error", 2000);
         } finally {
@@ -272,7 +274,7 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
                         <div className="flex gap-3">
                             <button
                                 type="button"
-                                onClick={() =>{
+                                onClick={() => {
                                     handleJenisUsulan('musrenbang');
                                 }}
                                 className={`px-2 py-1 rounded-xl border ${JenisUsulan === 'musrenbang' ? "bg-blue-500 text-white" : "bg-white text-blue-500 border border-blue-500 hover:text-white hover:bg-blue-500"}`}
@@ -300,7 +302,7 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
                             <button
                                 type="button"
                                 onClick={() => {
-                                   handleJenisUsulan('mandatori');
+                                    handleJenisUsulan('mandatori');
                                 }}
                                 className={`px-2 py-1 rounded-xl border ${JenisUsulan === 'mandatori' ? "bg-blue-500 text-white" : "bg-white text-blue-500 border border-blue-500 hover:text-white hover:bg-blue-500"}`}
                             >
@@ -343,8 +345,8 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
                                                             ...baseStyles,
                                                             borderRadius: '8px',
                                                         }),
-                                                        menuPortal: (base) => ({ 
-                                                            ...base, zIndex: 9999 
+                                                        menuPortal: (base) => ({
+                                                            ...base, zIndex: 9999
                                                         })
                                                     }}
                                                 />
@@ -385,7 +387,7 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div> 
+                                    </div>
                                 </div>
                             </>
                         }
@@ -425,8 +427,8 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
                                                             ...baseStyles,
                                                             borderRadius: '8px',
                                                         }),
-                                                        menuPortal: (base) => ({ 
-                                                            ...base, zIndex: 9999 
+                                                        menuPortal: (base) => ({
+                                                            ...base, zIndex: 9999
                                                         })
                                                     }}
                                                 />
@@ -467,7 +469,7 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, rekin_id, onS
                                                 </tr>
                                             </tbody>
                                         </table>
-                                    </div> 
+                                    </div>
                                 </div>
                             </>
                         }

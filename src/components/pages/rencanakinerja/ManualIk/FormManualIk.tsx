@@ -10,6 +10,7 @@ import { getToken, getOpdTahun, getUser } from '@/components/lib/Cookie';
 import { AlertNotification } from '@/components/global/Alert';
 import { LoadingButtonClip, LoadingSync } from '@/components/global/Loading';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/context/UserContext';
 
 interface OptionTypeString {
     value: string;
@@ -32,6 +33,7 @@ interface FormValue {
 }
 
 const FormManualIk = () => {
+    const { user } = useUser();
     const { id } = useParams();
     const token = getToken();
     const router = useRouter();
@@ -69,9 +71,9 @@ const FormManualIk = () => {
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {
@@ -175,12 +177,12 @@ const FormManualIk = () => {
                         reset({ periode_pelaporan: periode });
                     }
                 } else {
-                    if(User?.roles == 'level_1'){
+                    if (User?.roles == 'level_1') {
                         setDataNew(false);
-                    } else {   
+                    } else {
                         setDataNew(true);
                     }
-                    if(detail.nama_parent){
+                    if (detail.nama_parent) {
                         setTujuanRekin(detail.nama_parent);
                         reset({ tujuan_rekin: detail.nama_parent });
                     }
@@ -211,7 +213,7 @@ const FormManualIk = () => {
                 setLoading(false);
             }
         }
-        if(User?.roles != undefined || User?.roles != null){
+        if (User?.roles != undefined || User?.roles != null) {
             fetchManual(`manual_ik/detail/${id}`);
         }
     }, [token, id, reset, Success, Tahun, User]);

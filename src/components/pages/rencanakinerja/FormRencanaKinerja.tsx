@@ -10,6 +10,7 @@ import { useParams, useRouter } from "next/navigation";
 import { TablePohon } from "../Pohon/ModalPindahPohonOpd";
 import { TbEyeClosed, TbEye } from "react-icons/tb";
 import { LoadingClip, LoadingButtonClip } from "@/components/global/Loading";
+import { useUser } from "@/context/UserContext";
 
 interface OptionTypeString {
     value: string;
@@ -75,6 +76,7 @@ export const FormRencanaKinerja = () => {
     const [isClient, setIsClient] = useState<boolean>(false);
     const token = getToken();
     const router = useRouter();
+    const { user } = useUser();
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -83,9 +85,9 @@ export const FormRencanaKinerja = () => {
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data) {
             if (data.tahun) {
@@ -97,7 +99,7 @@ export const FormRencanaKinerja = () => {
             }
         }
         setIsClient(true);
-    }, []);
+    }, [user]);
 
     // useEffect(() => {
     //     if (fields.length === 0) {
@@ -518,12 +520,14 @@ export const FormEditRencanaKinerja = () => {
     const [PokinOption, setPokinOption] = useState<OptionType[]>([]);
     const token = getToken();
     const router = useRouter();
+    const { user } = useUser();
+
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data) {
             if (data.tahun) {
@@ -606,7 +610,7 @@ export const FormEditRencanaKinerja = () => {
                         }
                         setPokin(detail);
                     }
-                    
+
                     reset({
                         id_pohon: {
                             value: data.id_pohon,
@@ -627,7 +631,7 @@ export const FormEditRencanaKinerja = () => {
                             })),
                         })),
                     });
-                    if(data.indikator){
+                    if (data.indikator) {
                         // Replace the fields to avoid duplication
                         replace(data.indikator.map((item: indikator) => ({
                             id_indikator: item.id_indikator,
@@ -681,7 +685,7 @@ export const FormEditRencanaKinerja = () => {
             tahun: String(Tahun?.value),
             kode_opd: User?.kode_opd,
             pegawai_id: User?.nip,
-            indikator: data.indikator ? 
+            indikator: data.indikator ?
                 data.indikator.map((ind) => ({
                     id_indikator: ind.id_indikator,
                     nama_indikator: ind.nama_indikator,
@@ -689,8 +693,8 @@ export const FormEditRencanaKinerja = () => {
                         target: t.target,
                         satuan: t.satuan,
                     })),
-                })) 
-                : 
+                }))
+                :
                 []
         };
         // console.log(formData);

@@ -3,6 +3,7 @@
 import { createContext, useContext } from "react"
 import { getOpdTahun, getUser } from "@/components/lib/Cookie";
 import { useState, useEffect } from "react";
+import { useUser } from "@/context/UserContext";
 
 interface OptionType {
     value: number;
@@ -53,10 +54,11 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
     const [Tahun, setTahun] = useState<OptionType | null>(null);
     const [SelectedOpd, setSelectedOpd] = useState<OptionTypeString | null>(null);
     const [User, setUser] = useState<any>(null);
+    const { user } = useUser();
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (data) {
             if (data.tahun) {
                 const valueTahun = {
@@ -73,7 +75,7 @@ export function BrandingProvider({ children }: Readonly<{ children: React.ReactN
                 setSelectedOpd(valueOpd);
             }
             if (fetchUser) {
-                setUser(fetchUser.user);
+                setUser(user);
             }
         }
     }, [])

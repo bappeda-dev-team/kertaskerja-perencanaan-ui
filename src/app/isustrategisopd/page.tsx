@@ -8,6 +8,7 @@ import { FiHome } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { getOpdTahun, getUser, getPeriode, getToken, setCookie } from '@/components/lib/Cookie';
+import { useUser } from "@/context/UserContext";
 
 interface Periode {
     value: number;
@@ -20,8 +21,8 @@ interface Periode {
 }
 
 const IsuStrategis = () => {
-
-    const {branding} = useBrandingContext()
+    const { user } = useUser();
+    const { branding } = useBrandingContext()
     const tahun = branding?.tahun ? branding?.tahun.value : 0;
     const [User, setUser] = useState<any>(null);
     const [Periode, setPeriode] = useState<Periode | null>(null);
@@ -31,10 +32,10 @@ const IsuStrategis = () => {
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         const fetchPeriode = getPeriode();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (fetchPeriode.periode) {
             const data = {
@@ -119,7 +120,7 @@ const IsuStrategis = () => {
                 </div>
                 {Periode ?
                     <>
-                        <TablePermasalahan 
+                        <TablePermasalahan
                             tahun={tahun}
                             kode_opd={User?.roles == 'super_admin' ? branding?.opd?.value : User?.kode_opd}
                         />

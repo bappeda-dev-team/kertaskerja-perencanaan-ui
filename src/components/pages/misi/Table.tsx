@@ -10,6 +10,7 @@ import { getToken, getUser } from "@/components/lib/Cookie";
 import { TbPencil, TbTrash, TbCirclePlus } from "react-icons/tb";
 import { ModalMisi } from "./ModalMisi";
 import Select from 'react-select';
+import { useUser } from "@/context/UserContext";
 
 interface OptionTypeString {
     label: string;
@@ -52,12 +53,13 @@ const Table = () => {
     const [Tahun, setTahun] = useState<any>(null);
     const [User, setUser] = useState<any>(null);
     const token = getToken();
+    const { user } = useUser();
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {
@@ -74,7 +76,7 @@ const Table = () => {
     ];
 
     useEffect(() => {
-        if(JenisPeriode != null){
+        if (JenisPeriode != null) {
             fetchMisi(JenisPeriode ? JenisPeriode?.value : "RPJMD");
         }
     }, [FetchTrigger, JenisPeriode])
@@ -252,7 +254,7 @@ const Table = () => {
                                             {data.misi_pemda.map((item: MisiPemda) => (
                                                 <React.Fragment key={item.id}>
                                                     <tr>
-                                                        <td className="border border-emerald-500 px-4 py-4 text-center">{index +1}.{item.urutan}</td>
+                                                        <td className="border border-emerald-500 px-4 py-4 text-center">{index + 1}.{item.urutan}</td>
                                                         <td className="border-x border-b border-emerald-500 px-6 py-4">{item.misi}</td>
                                                         <td className="border-x border-b border-emerald-500 px-6 py-4 text-center">{item.tahun_akhir_periode ? `${item.tahun_awal_periode} - ${item.tahun_akhir_periode} (${item.jenis_periode})` : "-"}</td>
                                                         <td className="border-x border-b border-emerald-500 px-6 py-4">{item.keterangan || "-"}</td>

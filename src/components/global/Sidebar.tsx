@@ -11,7 +11,7 @@ import { ReactNode } from "react";
 import { useState, useEffect } from "react";
 
 interface SidebarProps {
-    isOpen: boolean | null;
+    isOpen: boolean;
     isZoomed: boolean | null;
     toggleSidebar: () => void;
     user?: User | null;
@@ -27,8 +27,6 @@ type MenuItem = {
 
 const renderSubMenu = (menu: MenuItem, openMenus: Record<string, boolean>, isOpen: boolean, toggleMenu: (id: string) => void, currentUrl: string) => {
     const isOpenMenu = openMenus[menu.id] ?? false;
-    const isActive = currentUrl.startsWith(menu.href);
-
     if (!menu.sub_menu || menu.sub_menu.length === 0) return null;
 
     return (
@@ -140,7 +138,7 @@ export default function Sidebar({ isZoomed, isOpen, toggleSidebar, user }: Sideb
         });
 
         setOpenMenus(prev => ({ ...prev, ...newOpenMenus }));
-    }, []);
+    }, [url]);
 
     return (
         <aside className="flex">

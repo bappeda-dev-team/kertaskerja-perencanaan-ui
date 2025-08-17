@@ -10,6 +10,7 @@ import Select from "react-select";
 import { AlertNotification } from "@/components/global/Alert";
 import { TbCirclePlus, TbPlus, TbTrash } from "react-icons/tb";
 import { useBrandingContext } from "@/context/BrandingContext";
+import { useUser } from "@/context/UserContext";
 
 interface FormValue {
     id?: string;
@@ -40,6 +41,7 @@ interface modal {
 
 
 export const ModalIsu: React.FC<modal> = ({ isOpen, onClose, id, metode, onSuccess }) => {
+    const { user } = useUser();
 
     const {
         control,
@@ -66,10 +68,10 @@ export const ModalIsu: React.FC<modal> = ({ isOpen, onClose, id, metode, onSucce
     const Tahun = branding?.tahun ? branding?.tahun.value : 0;
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const fetchPeriode = getPeriode();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (fetchPeriode.periode) {
             const data = {
@@ -175,8 +177,8 @@ export const ModalIsu: React.FC<modal> = ({ isOpen, onClose, id, metode, onSucce
             kode_bidang_urusan: data.kode_bidang_urusan.value,
             nama_bidang_urusan: data.kode_bidang_urusan.nama_bidang_urusan,
             tahun_awal: Periode.tahun_awal,
-            tahun_akhir: Periode.tahun_akhir, 
-            isu_strategis: data.isu_strategis, 
+            tahun_akhir: Periode.tahun_akhir,
+            isu_strategis: data.isu_strategis,
         };
         const getBody = () => {
             if (metode === "edit") return formDataEdit;

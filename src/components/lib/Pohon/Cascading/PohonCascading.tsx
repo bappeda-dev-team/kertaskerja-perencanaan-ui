@@ -5,6 +5,7 @@ import { AlertNotification, AlertQuestion } from '@/components/global/Alert';
 import { FormEditCascading } from './FormCascading';
 import { getToken, getUser } from '../../Cookie';
 import { ModalCetak } from '@/components/pages/Pohon/ModalCetak';
+import { useUser } from '@/context/UserContext';
 
 interface pohon {
     tema: any;
@@ -18,6 +19,7 @@ export const PohonCascading: React.FC<pohon> = ({ tema, deleteTrigger, show_all,
     const [childPohons, setChildPohons] = useState(tema.childs || []);
     const [formList, setFormList] = useState<number[]>([]); // List of form IDs
 
+    const { user } = useUser();
     const [IsCetak, setIsCetak] = useState<boolean>(false);
     const [edit, setEdit] = useState<boolean>(false);
     const [Show, setShow] = useState<boolean>(false);
@@ -26,9 +28,9 @@ export const PohonCascading: React.FC<pohon> = ({ tema, deleteTrigger, show_all,
     const token = getToken();
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
     }, []);
 
@@ -222,13 +224,14 @@ export const PohonCascadingEdited: React.FC<pohon> = ({ tema, deleteTrigger }) =
     const [Edited, setEdited] = useState<any | null>(null);
     const [User, setUser] = useState<any>(null);
     const token = getToken();
+    const { user } = useUser();
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
-    }, [])
+    }, [user])
 
     // Adds a new form entry
     const newChild = () => {

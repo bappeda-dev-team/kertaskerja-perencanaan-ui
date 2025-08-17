@@ -10,19 +10,21 @@ import { AlertNotification } from '@/components/global/Alert';
 import { useRouter } from 'next/navigation';
 import { TahunNull } from '@/components/global/OpdTahunNull';
 import { LoadingButtonClip } from '@/components/global/Loading';
+import { useUser } from '@/context/UserContext';
 
 const RencanaKinerja = () => {
 
+    const { user } = useUser();
     const [Tahun, setTahun] = useState<any>(null);
     const [User, setUser] = useState<any>(null);
     const [Loading, setLoading] = useState<boolean>(false);
     const router = useRouter();
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data) {
             if (data.tahun) {

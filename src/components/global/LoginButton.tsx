@@ -1,7 +1,7 @@
 import { TbLogin } from "react-icons/tb";
 import { useUser } from '@/context/UserContext';
 
-export default function () {
+export default function LoginButton() {
     const { authUrl } = useUser();
     return (
         <button

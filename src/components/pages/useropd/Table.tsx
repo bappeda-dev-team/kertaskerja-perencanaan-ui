@@ -37,7 +37,7 @@ const Table = () => {
                 const fetchUser = await getUser();   // ✅ tunggu async
 
                 if (fetchUser) {
-                    setuser(fetchUser.user);
+                    setUser(user);
                 }
 
             } catch (err) {

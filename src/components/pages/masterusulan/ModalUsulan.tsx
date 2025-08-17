@@ -42,7 +42,7 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, jenis, metode
     const [user, setUser] = useState<any>(null);
     const [Tahun, setTahun] = useState<any>(null);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
-    
+
     const [Usulan, setUsulan] = useState<string>("");
     const [Alamat, setAlamat] = useState<string>('');
     const [Uraian, setUraian] = useState<string>('');
@@ -52,81 +52,81 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, jenis, metode
     const token = getToken();
 
     useEffect(() => {
-        const fetchUser = getUser();
-        if(fetchUser){
-            setUser(fetchUser.user);
+        const fetchUser = user;
+        if (fetchUser) {
+            setUser(user);
         }
         const data = getOpdTahun();
-        if(data.tahun){
+        if (data.tahun) {
             const tahun = {
                 value: data.tahun.value,
                 label: data.tahun.label,
             }
             setTahun(tahun);
         }
-        if(data.opd){
+        if (data.opd) {
             const opd = {
                 value: data.opd.value,
                 label: data.opd.label,
             }
             setSelectedOpd(opd);
         }
-    },[]);
+    }, []);
 
     useEffect(() => {
         const API_URL = process.env.NEXT_PUBLIC_API_URL;
-        const fetchMusrenbang = async() => {
-            try{
+        const fetchMusrenbang = async () => {
+            try {
                 const response = await fetch(`${API_URL}/usulan_musrebang/detail/${id}`, {
                     headers: {
                         Authorization: `${token}`,
                         'Content-Type': 'application/json',
-                      },
+                    },
                 });
                 const result = await response.json();
                 const data = result.usulan_musrebang;
-                if(data.usulan){
+                if (data.usulan) {
                     setUsulan(data.usulan);
                 }
-                if(data.alamat){
+                if (data.alamat) {
                     setAlamat(data.alamat);
                 }
-                if(data.uraian){
+                if (data.uraian) {
                     setUraian(data.uraian);
                 }
-                if(data.status){
+                if (data.status) {
                     setStatus(data.status);
                 }
-            } catch(err){
+            } catch (err) {
                 console.error(err)
-            } 
+            }
         }
-        const fetchPokir = async() => {
-            try{
+        const fetchPokir = async () => {
+            try {
                 const response = await fetch(`${API_URL}/usulan_pokok_pikiran/detail/${id}`, {
                     headers: {
                         Authorization: `${token}`,
                         'Content-Type': 'application/json',
-                      },
+                    },
                 });
                 const result = await response.json();
                 const data = result.usulan_pokok_pikiran;
-                if(data.usulan){
+                if (data.usulan) {
                     setUsulan(data.usulan);
                 }
-                if(data.alamat){
+                if (data.alamat) {
                     setAlamat(data.alamat);
                 }
-                if(data.uraian){
+                if (data.uraian) {
                     setUraian(data.uraian);
                 }
-            } catch(err){
+            } catch (err) {
                 console.error(err)
-            } 
+            }
         }
-        if(jenis === 'musrenbang' && metode === 'lama' && isOpen){
+        if (jenis === 'musrenbang' && metode === 'lama' && isOpen) {
             fetchMusrenbang();
-        } else if(jenis === 'pokir' && metode === 'lama' && isOpen){
+        } else if (jenis === 'pokir' && metode === 'lama' && isOpen) {
             fetchPokir();
         }
     }, [token, jenis, metode, id, isOpen])
@@ -144,7 +144,7 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, jenis, metode
             status: Status,
         };
         // console.log(formData);
-        try{
+        try {
             setProses(true);
             let url = '';
             if (jenis === "musrenbang") {
@@ -160,14 +160,14 @@ export const ModalAddUsulan: React.FC<modal> = ({ isOpen, onClose, jenis, metode
                 },
                 body: JSON.stringify(formData),
             });
-            if(response.ok){
+            if (response.ok) {
                 AlertNotification("Berhasil", "Berhasil menambahkan usulan", "success", 1000);
                 onClose();
                 onSuccess();
             } else {
                 AlertNotification("Gagal", "terdapat kesalahan pada backend / database server", "error", 2000);
             }
-        } catch(err){
+        } catch (err) {
             AlertNotification("Gagal", "cek koneksi internet/terdapat kesalahan pada database server", "error", 2000);
         } finally {
             setProses(false);

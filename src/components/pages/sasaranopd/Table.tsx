@@ -8,6 +8,7 @@ import { TahunNull, OpdTahunNull } from "@/components/global/OpdTahunNull";
 import { getToken, getUser, getOpdTahun } from "@/components/lib/Cookie";
 import { TbPencil, TbTrash, TbCirclePlus, TbArrowBadgeDownFilled } from "react-icons/tb";
 import { ModalSasaranOpd } from "./ModalSasaranOpd";
+import { useUser } from "@/context/UserContext";
 
 interface OptionTypeString {
     value: string;
@@ -88,12 +89,13 @@ const Table: React.FC<table> = ({ tipe, id_periode, tahun_awal, tahun_akhir, jen
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
     const [User, setUser] = useState<any>(null);
     const token = getToken();
+    const { user } = useUser();
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {
@@ -138,7 +140,7 @@ const Table: React.FC<table> = ({ tipe, id_periode, tahun_awal, tahun_akhir, jen
                     setPeriodeNotFound(true);
                     setSasaran([]);
                     console.log(result.data);
-                } else if(result.code == 200 || result.code == 201){
+                } else if (result.code == 200 || result.code == 201) {
                     setDataNull(false);
                     setSasaran(data);
                     setError(false);

@@ -9,18 +9,20 @@ import { AlertNotification } from '@/components/global/Alert';
 import { useRouter } from 'next/navigation';
 import { TbDeviceFloppy } from 'react-icons/tb';
 import Maintenance from '@/components/global/Maintenance';
+import { useUser } from '@/context/UserContext';
 
 const RincianBelanja = () => {
 
+    const { user } = useUser();
     const [Tahun, setTahun] = useState<any>(null);
     const [User, setUser] = useState<any>(null);
     const router = useRouter();
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data) {
             if (data.tahun) {

@@ -6,15 +6,17 @@ import { useEffect, useState } from 'react';
 import { getOpdTahun, getUser, getToken } from '@/components/lib/Cookie';
 import Maintenance from '@/components/global/Maintenance';
 import { OpdTahunNull, TahunNull } from '@/components/global/OpdTahunNull';
+import { useUser } from "@/context/UserContext";
 
 const LaporanRincianBelanja = () => {
 
+    const { user } = useUser();
     const [User, setUser] = useState<any>(null);
     const [Tahun, setTahun] = useState<any>(null);
     const [SelectedOpd, setSelectedOpd] = useState<any>(null);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         if (data) {
             if (data.tahun) {
@@ -33,7 +35,7 @@ const LaporanRincianBelanja = () => {
             }
         }
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
     }, [])
 
@@ -58,11 +60,11 @@ const LaporanRincianBelanja = () => {
                 </div>
                 <div className="flex m-2">
                     {(User?.roles == 'super_admin' || User?.roles == 'reviewer' || User?.roles == 'admin_opd') ?
-                            <TableLaporan
-                                role={User?.roles}
-                                tahun={Tahun?.value}
-                                kode_opd={(User?.roles == 'super_admin' || User?.roles == 'reviewer') ? SelectedOpd?.value : User?.kode_opd}
-                            />
+                        <TableLaporan
+                            role={User?.roles}
+                            tahun={Tahun?.value}
+                            kode_opd={(User?.roles == 'super_admin' || User?.roles == 'reviewer') ? SelectedOpd?.value : User?.kode_opd}
+                        />
                         :
                         (Tahun?.value === undefined) ?
                             <div className="w-full">

@@ -9,6 +9,7 @@ import { TahunNull } from "@/components/global/OpdTahunNull";
 import { getToken, getUser } from "@/components/lib/Cookie";
 import { TbPencil, TbArrowBadgeDownFilled, TbTrash, TbCirclePlus } from "react-icons/tb";
 import { ModalSasaranPemda } from "./ModalSasaranPemda";
+import { useUser } from "@/context/UserContext";
 
 
 interface Target {
@@ -67,7 +68,7 @@ interface table {
     tahun_list: string[];
 }
 
-const Table: React.FC<table> = ({id_periode, tahun_awal, tahun_akhir, jenis, tahun_list}) => {
+const Table: React.FC<table> = ({ id_periode, tahun_awal, tahun_akhir, jenis, tahun_list }) => {
 
     const [Data, setData] = useState<Sasaran[]>([]);
 
@@ -90,12 +91,13 @@ const Table: React.FC<table> = ({id_periode, tahun_awal, tahun_akhir, jenis, tah
     const [JenisPohon, setJenisPohon] = useState<string>('');
 
     const [Show, setShow] = useState<{ [key: string]: boolean }>({});
+    const { user } = useUser();
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {
@@ -129,7 +131,7 @@ const Table: React.FC<table> = ({id_periode, tahun_awal, tahun_akhir, jenis, tah
                 if (data == null) {
                     setDataNull(true);
                     setData([]);
-                } else if(result.code == 200 || result.code == 201){
+                } else if (result.code == 200 || result.code == 201) {
                     setDataNull(false);
                     setData(data);
                     setError(false);

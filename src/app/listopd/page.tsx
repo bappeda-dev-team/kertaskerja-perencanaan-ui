@@ -6,14 +6,16 @@ import { useEffect, useState } from 'react';
 import { getOpdTahun, getUser, getToken } from '@/components/lib/Cookie';
 import Maintenance from '@/components/global/Maintenance';
 import { TahunNull } from '@/components/global/OpdTahunNull';
+import { useUser } from "@/context/UserContext";
 
 const LaporanRincianBelanja = () => {
 
+    const { user } = useUser();
     const [User, setUser] = useState<any>(null);
     const [Tahun, setTahun] = useState<any>(null);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         if (data) {
             if (data.tahun) {
@@ -25,7 +27,7 @@ const LaporanRincianBelanja = () => {
             }
         }
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
     }, [])
 
@@ -46,7 +48,7 @@ const LaporanRincianBelanja = () => {
                             <TahunNull />
                         </div>
                         :
-                        <Table 
+                        <Table
                             tahun={Tahun?.value}
                         />
                     }

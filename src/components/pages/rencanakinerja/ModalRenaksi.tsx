@@ -6,6 +6,7 @@ import { ButtonSky, ButtonRed } from '@/components/global/Button';
 import { getToken, getUser } from "@/components/lib/Cookie";
 import { LoadingButtonClip } from "@/components/global/Loading";
 import { AlertNotification, AlertQuestion } from "@/components/global/Alert";
+import { useUser } from "@/context/UserContext";
 
 interface FormValue {
     rekin_id: string;
@@ -25,7 +26,7 @@ interface modal {
 
 
 export const ModalRenaksi: React.FC<modal> = ({ isOpen, onClose, id, rekin_id, metode, onSuccess }) => {
-
+    const { user } = useUser();
     const {
         control,
         handleSubmit,
@@ -40,9 +41,9 @@ export const ModalRenaksi: React.FC<modal> = ({ isOpen, onClose, id, rekin_id, m
     const [Proses, setProses] = useState<boolean>(false);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
     }, []);
 

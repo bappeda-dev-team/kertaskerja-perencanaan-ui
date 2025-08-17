@@ -2,7 +2,7 @@ import { TbLogout } from "react-icons/tb";
 import { useUser } from '@/context/UserContext';
 import { useEffect, useState } from 'react'
 
-export default function () {
+export default function LogoutButton() {
     const [csrfToken, setCsrfToken] = useState<string>("");
 
     useEffect(() => {

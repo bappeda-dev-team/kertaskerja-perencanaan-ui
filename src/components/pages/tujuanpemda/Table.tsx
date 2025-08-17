@@ -9,6 +9,7 @@ import { TahunNull } from "@/components/global/OpdTahunNull";
 import { getToken, getUser } from "@/components/lib/Cookie";
 import { TbPencil, TbTrash, TbCirclePlus, TbArrowBadgeDownFilled, TbX } from "react-icons/tb";
 import { ModalTujuanPemda } from "./ModalTujuanPemda";
+import { useUser } from "@/context/UserContext";
 
 interface Periode {
     tahun_awal: string;
@@ -63,7 +64,7 @@ interface table {
     tahun_list: string[];
 }
 
-const Table: React.FC<table> = ({id_periode, tahun_awal, tahun_akhir, jenis, tahun_list}) => {
+const Table: React.FC<table> = ({ id_periode, tahun_awal, tahun_akhir, jenis, tahun_list }) => {
 
     const [Tujuan, setTujuan] = useState<tujuan[]>([]);
 
@@ -81,12 +82,13 @@ const Table: React.FC<table> = ({id_periode, tahun_awal, tahun_akhir, jenis, tah
     const [Tahun, setTahun] = useState<any>(null);
     const [User, setUser] = useState<any>(null);
     const token = getToken();
+    const { user } = useUser();
 
     useEffect(() => {
         const data = getOpdTahun();
-        const fetchUser = getUser();
+        const fetchUser = user;
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.tahun) {
             const tahun = {
@@ -116,7 +118,7 @@ const Table: React.FC<table> = ({id_periode, tahun_awal, tahun_akhir, jenis, tah
                 } else if (result.code == 500) {
                     setPeriodeNotFound(true);
                     setTujuan([]);
-                } else if(result.code == 200 || result.code == 201){
+                } else if (result.code == 200 || result.code == 201) {
                     setDataNull(false);
                     setTujuan(data);
                     setError(false);
@@ -256,7 +258,7 @@ const Table: React.FC<table> = ({id_periode, tahun_awal, tahun_akhir, jenis, tah
                                                     {data.nama_tematik || "-"}
                                                     <div className="flex items center gap-1 border-t border-emerald-500 pt-3">
                                                         <div className="flex flex-col justify-between  gap-2 h-full w-full">
-                                                            {data.is_active === false ? 
+                                                            {data.is_active === false ?
                                                                 <button
                                                                     className="flex justify-between gap-1 rounded-full p-1 bg-red-500 text-white cursor-not-allowed"
                                                                     onClick={() => handleModalNewTujuan(data.pokin_id)}
@@ -268,7 +270,7 @@ const Table: React.FC<table> = ({id_periode, tahun_awal, tahun_akhir, jenis, tah
                                                                     </div>
                                                                     <TbArrowBadgeDownFilled className="-rotate-90" />
                                                                 </button>
-                                                            :
+                                                                :
                                                                 <button
                                                                     className="flex justify-between gap-1 rounded-full p-1 bg-sky-500 text-white border border-sky-500 hover:bg-white hover:text-sky-500 hover:border hover:border-sky-500"
                                                                     onClick={() => handleModalNewTujuan(data.pokin_id)}

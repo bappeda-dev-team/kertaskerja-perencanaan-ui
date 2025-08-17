@@ -6,6 +6,7 @@ import { getToken, getOpdTahun, getUser, getPeriode } from "@/components/lib/Coo
 import { useEffect, useState } from "react";
 import Select from 'react-select';
 import { OpdNull } from "@/components/global/OpdTahunNull";
+import { useUser } from "@/context/UserContext";
 
 interface Periode {
     value: number;
@@ -19,6 +20,7 @@ interface Periode {
 
 const MatrixRenstra = () => {
 
+    const { user } = useUser();
     const token = getToken();
     const [Periode, setPeriode] = useState<Periode | null>(null);
     const [PeriodeOption, setPeriodeOption] = useState<Periode[]>([]);
@@ -28,11 +30,11 @@ const MatrixRenstra = () => {
     const [Loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        const fetchUser = getUser();
+        const fetchUser = user;
         const data = getOpdTahun();
         const fetchPeriode = getPeriode();
         if (fetchUser) {
-            setUser(fetchUser.user);
+            setUser(user);
         }
         if (data.opd) {
             const opd = {
