@@ -140,7 +140,7 @@ export default function Sidebar({ isZoomed, isOpen, toggleSidebar, user }: Sideb
         });
 
         setOpenMenus(prev => ({ ...prev, ...newOpenMenus }));
-    }, [url, userMenus]);
+    }, []);
 
     return (
         <aside className="flex">
