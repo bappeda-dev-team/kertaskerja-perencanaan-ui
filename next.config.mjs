@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   basePath: "/perencanaan",
-  assetPrefix: "https://nextcdn.kertaskerja.cc/perencanaan-ui",
+  assetPrefix: "/perencanaan/",
     images: {
         domains: ['logo.kertaskerja.cc'],
     },
