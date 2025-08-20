@@ -2,6 +2,7 @@
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
 import { getSessionExpiry } from "@/utils/session";
 import { User } from "@/types"
+import { authenticate } from "@/lib/auth";
 
 type UserContextType = {
     user: User | null;
@@ -51,12 +52,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     // fetch profil user sekali
     const refreshUser = async () => {
         try {
-            setLoading(true);
-            const res = await fetch("/user", { credentials: "include" });
-            if (!res.ok) throw new Error("Unauthorized");
-            const data: User = await res.json();
-            setUser(data);
-            setLoading(false);
+            const user = await authenticate();
+            setUser(user);
         } catch {
             setUser(null);
         } finally {
