@@ -93,7 +93,7 @@ export async function getUser(): Promise<{ user: User } | null> {
 }
 
 export const getToken = () => {
-    const get_Token = getCookie("SESSION")
+    const get_Token = getCookie("XSRF-TOKEN")
     if (get_Token) {
         return get_Token;
     }
