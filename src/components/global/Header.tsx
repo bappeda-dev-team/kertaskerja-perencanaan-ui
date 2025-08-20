@@ -126,11 +126,25 @@ const Header = ({ user }: HeaderProps) => {
     return (
         <div>
             <div className="flex flex-wrap gap-2 justify-between items-center rounded-2xl mx-2 mt-2 bg-gradient-to-r from-[#182C4E] to-[#17212D] py-4 pr-2 pl-3">
-                <div className="flex flex-col text-white max-w-[400px]">
-                    {user?.roles.includes('super_admin') ??
-                        <h1 className="font-light text-sm">{Opd ? Opd?.label : "Pilih OPD"}</h1>
-                    }
-                    {/* <h1 className="font-light text-sm">{Tahun ? Tahun?.value : "Pilih Tahun"} - Kab. Madiun</h1> */}
+                <div className="button-dashboard flex gap-2 px-2">
+                    <button
+                        className="flex items-center justify-center gap-2 px-6 py-3 min-w-[50px] bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-100 hover:text-black"
+                        onClick={() => (window.location.href = "/")}
+                    >
+                        DASHBOARD
+                    </button>
+                    <button
+                        className="flex items-center justify-center gap-2 px-6 py-3 min-w-[50px] bg-blue-500 text-white rounded-lg shadow hover:bg-blue-100 hover:text-black"
+                        onClick={() => (window.location.href = "/realisasi")}
+                    >
+                        REALISASI
+                    </button>
+                    <button
+                        className="flex items-center justify-center gap-2 px-6 py-3 min-w-[50px] bg-stone-500 text-white rounded-lg shadow hover:bg-stone-100 hover:text-black"
+                        onClick={() => (window.location.href = "/Laporan")}
+                    >
+                        LAPORAN
+                    </button>
                 </div>
                 <div className="flex flex-wrap items-center">
                     {(user?.roles.some(r => ['super_admin', 'reviewer'].includes(r))) && (
